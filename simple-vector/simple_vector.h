@@ -44,7 +44,7 @@ public:
         :size_(other.size_), capacity_(other.size_), array_(other.size_)
     {
         swap(other);
-        other.Clear(); //тест TestNamedMoveConstructor() требует, чтобы вектор был пустым
+        other.Clear(); //test TestNamedMoveConstructor() checks if vector is empty
     }
 
     SimpleVector(const ReserveProxyObj& input)
