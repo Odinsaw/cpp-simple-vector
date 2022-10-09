@@ -43,15 +43,8 @@ public:
     SimpleVector(SimpleVector&& other)
         :size_(other.size_), capacity_(other.size_), array_(other.size_)
     {
-        /*std::move(other.begin(), other.end(), begin());
-        other.size_ = 0;*/
-        if (this != &other)
-        {
-            array_.swap(other.array_);
-            std::swap(this->size_, other.size_);
-            std::swap(this->capacity_, other.capacity_);
-            other.Clear();
-        }
+        swap(other);
+        other.Clear(); //тест TestNamedMoveConstructor() требует, чтобы вектор был пустым
     }
 
     SimpleVector(const ReserveProxyObj& input)
@@ -76,13 +69,13 @@ public:
         std::fill(begin(), end(), value);
     }
 
-    SimpleVector(size_t size, Type&& value)
-        :capacity_(size), size_(size),array_(size)
-    {
-        for (auto it = begin(); it != end(); ++it) {
-            *it = Type(value);
-        }
-    }
+    //SimpleVector(size_t size, Type&& value)
+    //    :capacity_(size), size_(size),array_(size)
+    //{
+    //    for (auto it = begin(); it != end(); ++it) {
+    //        *it = Type(value);
+    //    }
+    //}
 
     // Создаёт вектор из std::initializer_list
     SimpleVector(std::initializer_list<Type> init)
@@ -103,10 +96,8 @@ public:
     SimpleVector operator=(SimpleVector&& rhs) {
         if (this != &rhs)
         {
-            array_.swap(rhs.array_);
-            std::swap(this->size_, rhs.size_);
-            std::swap(this->capacity_, rhs.capacity_);
-            rhs.Clear();
+            swap(rhs);
+            //rhs.Clear();
         }
         return *this;
     }
@@ -117,20 +108,17 @@ public:
     }
 
     void PushBack(const Type& value) {
-        auto old_size = size_;
         if (capacity_ == 0) {
             Reserve(1);
         }
         else if (size_ >= capacity_) {
             Reserve(2 * capacity_);
         }
-        size_ = old_size;
         (*this).array_[size_] = value;
         ++size_;
     }
 
     void PushBack(Type&& value) {
-
         if (capacity_ == 0) {
             Reserve(1);
         }
@@ -147,7 +135,7 @@ public:
     }
 
     Iterator Erase(ConstIterator pos) {
-        assert(pos >= cbegin() && pos <= cend());
+        assert(pos >= cbegin() && pos < cend());
         auto p = const_cast<Iterator>(pos);
         std::move(p + 1, end(), p);
         --size_;
@@ -221,13 +209,13 @@ public:
 
     // Возвращает ссылку на элемент с индексом index
     Type& operator[](size_t index) noexcept {
-        assert(index >= 0 && index < size_);
+        assert(index < size_);
         return array_[index];
     }
 
     // Возвращает константную ссылку на элемент с индексом index
     const Type& operator[](size_t index) const noexcept {
-        assert(index >= 0 && index < size_);
+        assert(index < size_);
         return array_[index];
     }
 

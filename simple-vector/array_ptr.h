@@ -32,7 +32,9 @@ public:
     }
 
     ArrayPtr& operator=(const ArrayPtr&& other) {
-        assert(raw_ptr_ == nullptr);
+        if (raw_ptr_ != nullptr) {
+            delete[] raw_ptr_;
+        }
         raw_ptr_ = std::exchange(other.raw_ptr_, nullptr);
     }
 
