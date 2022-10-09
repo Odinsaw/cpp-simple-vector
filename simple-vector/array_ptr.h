@@ -27,6 +27,15 @@ public:
     // Запрещаем копирование
     ArrayPtr(const ArrayPtr&) = delete;
 
+    ArrayPtr(ArrayPtr&& other) {
+        raw_ptr_ = std::exchange(other.raw_ptr_, nullptr);
+    }
+
+    ArrayPtr& operator=(const ArrayPtr&& other) {
+        assert(raw_ptr_ == nullptr);
+        raw_ptr_ = std::exchange(other.raw_ptr_, nullptr);
+    }
+
     ~ArrayPtr() {
         delete[] raw_ptr_;
     }

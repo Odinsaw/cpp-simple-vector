@@ -1,10 +1,10 @@
 //#include "simple_vector.h"
 //
 //// Tests
-//#include "tests.h"
+#include "tests.h"
 //
 //int main() {
-//    //Test1();
+//    Test1();
 //    Test2();
 //    TestReserveConstructor();
 //    TestReserveMethod();
@@ -170,5 +170,9 @@ int main() {
     TestNoncopiablePushBack();
     TestNoncopiableInsert();
     TestNoncopiableErase();
+    Test1();
+    Test2();
+    TestReserveConstructor();
+    TestReserveMethod();
     return 0;
 }
